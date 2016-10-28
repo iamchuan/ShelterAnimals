@@ -1,0 +1,56 @@
+---
+title: "shelterAnimalsDoc"
+author: "Chuan Hong"
+date: "10/16/2016"
+# output: html_document
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(cache = TRUE)
+knitr::opts_chunk$set(warning = FALSE)
+
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(plotly)
+library(googleVis)
+source("./lib.R")
+
+# op <- options(gvis.plot.tag='chart')
+
+animal_train <- read.csv("./train.csv", 
+                         header = TRUE, 
+                         na.strings = "",
+                         stringsAsFactors = FALSE)
+
+cat_train <- animal_train %>% 
+  filter(AnimalType == "Cat")
+```
+
+## Does Name Matter?
+
+```{r name, cache=FALSE}
+cat_train <- cat_train %>% 
+  mutate(hasName = ifelse(is.na(Name), "No", "Yes"))
+ggplotly(bar_plot(cat_train, "hasName", "OutcomeType"))
+```
+
+## Does Sex Matter?
+
+```{r sex}
+cat_train <- cat_train %>%
+  mutate(sex = ifelse(grepl("Female", SexuponOutcome), "Female",
+                      ifelse(grepl("Male", SexuponOutcome), "Male", NA)),
+         isNeutered = ifelse(grepl("Unknown", SexuponOutcome), NA,
+                             ifelse(grepl("Intact", SexuponOutcome), "No", "Yes")))
+# 
+# ggplotly(bar_plot(cat_train, "sex", "OutcomeType"))
+ggplotly(bar_plot(cat_train, "sex", "OutcomeType", position = "fill"))
+# 
+# ggplotly(bar_plot(cat_train, "isNeutered", "OutcomeType"))
+# ggplotly(bar_plot(cat_train, "isNeutered", "OutcomeType", position = "fill"))
+```
+
+
