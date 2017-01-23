@@ -4,6 +4,7 @@ library(dplyr)
 library(tidyr)
 library(plotly)
 library(googleVis)
+library(scales)
 
 ### <<<<<<<<<< loaddata
 animal_train <- read.csv("/Users/apple/Desktop/GitHub/ShelterAnimals/train.csv", 
@@ -17,8 +18,6 @@ cat_train <- animal_train %>%
   filter(AnimalType == "Cat")
 dog_train <- animal_train %>% 
   filter(AnimalType == "Dog")
-
-
 
 ### <<<<<<<<<< functions for age conversion
 
@@ -76,7 +75,7 @@ bar_plot <- function(data, xvar, group,
     geom_bar(position = position, color = color) + 
     scale_fill_brewer(palette = palette)
   if(position == "fill") {
-    g <- g + ylab("Percentage")
+    g <- g + scale_y_continuous(labels=percent) + ylab("Percentage")
   }
   return(g)
 }
